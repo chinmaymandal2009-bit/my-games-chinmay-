@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>My Game | 10 Games</title>
+<title>My Game | 14 Games</title>
 <style>
 :root{--bg:#0b1020;--panel:#151d33;--panel2:#1c2945;--text:#f5f7ff;--muted:#aab6d3;--accent:#7c5cff;--accent2:#27d7a1;--gold:#ffd166;--glow:#7c5cff66}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c2a50 0,#0b1020 60%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer;border:0}
@@ -49,7 +49,7 @@ footer{border-top:1px solid #ffffff14;text-align:center;padding:22px;color:var(-
  <div class="game-top"><div><div class="game-title" id="gameTitle">Game</div><div class="game-info" id="gameInfo">নির্দেশনা</div></div><button class="secondary" id="backBtn">← সব গেম</button></div>
  <div class="game-shell"><div class="game-canvas-wrap" id="canvasWrap"></div><div class="message" id="message" aria-live="polite">খেলা শুরু করো!</div><div class="game-controls" id="gameControls"></div></div>
 </section>
-<footer>MY GAME · 10 mini games in one web app · Progress scores are saved on this device.</footer>
+<footer>MY GAME · 14 mini games in one web app · Progress scores are saved on this device.</footer>
 <script>
 const games=[
 {id:'runner',name:'Coin Runner',icon:'🏃',tag:'2D RUNNER',desc:'চরিত্র চালাও, কয়েন নাও, বাধা এড়িয়ে চলো।',colors:['#3c9b9c','#17264a'],how:'← → বা A/D দিয়ে চলবে, Space দিয়ে লাফাবে।',best:'runner'},
@@ -63,6 +63,8 @@ const games=[
 {id:'guess',name:'Number Guess',icon:'🔢',tag:'BRAIN',desc:'১ থেকে ১০০-এর মধ্যে গোপন সংখ্যা অনুমান করো।',colors:['#00f5d4','#145c68'],how:'সংখ্যা লিখে Guess চাপো; বেশি না কম জানানো হবে।',best:'guess'},
 {id:'ludo',name:'Ludo',icon:'🎲',tag:'BOARD GAME',desc:'পাশা রোল করো, ঘুঁটি চালাও এবং আগে সব ঘুঁটি ঘরে পৌঁছাও।',colors:['#ef476f','#284b9b'],how:'Roll Dice চাপো; ৬ পেলে ঘুঁটি বের হবে। ঘুঁটি বেছে Move চাপো।',best:'ludo'},
 {id:'carrom',name:'Carrom',icon:'🔴',tag:'PHYSICS GAME',desc:'স্ট্রাইকার টেনে শট নাও, গুটি পকেটে ফেলো এবং পয়েন্ট জিতো।',colors:['#c18a52','#4a2e23'],how:'স্ট্রাইকারে টাচ করে পিছনে টেনে ছেড়ে দাও—এটাই শট।',best:'carrom'},
+{id:'chess',name:'Chess',icon:'♟️',tag:'STRATEGY',desc:'দাবা খেলো—বৈধ চাল, Check এবং Checkmate সহ।',colors:['#e0b16a','#365f52'],how:'ঘুঁটিতে ট্যাপ করো, তারপর গন্তব্য ঘরে ট্যাপ করো। মোড বেছে নাও: ২ জন বা কম্পিউটার।',best:'chess'},
+{id:'pool',name:'8 Ball Pool',icon:'🎱',tag:'BILLIARDS',desc:'কিউ দিয়ে বল পকেটে ফেলো; ৮ নম্বর বল শেষে ফেলতে হবে।',colors:['#15966b','#103e42'],how:'সাদা বলের কাছে টাচ/ক্লিক করে বিপরীত দিকে টেনে শট নাও। মোড বেছে নাও: ২ জন বা কম্পিউটার।',best:'pool'},
 {id:'lights',name:'Lights Out',icon:'💡',tag:'LOGIC',desc:'লাইট বন্ধ করো—একটি টাইল চাপলে পাশেরগুলিও বদলাবে।',colors:['#f8961e','#8a3d28'],how:'সব আলো বন্ধ করাই লক্ষ্য। টাইল চাপলে তার চারপাশ বদলায়।',best:'lights'}
 ];
 const $=s=>document.querySelector(s); const grid=$('#grid'); let current=null, cleanup=()=>{}, high={}; try { high=JSON.parse(localStorage.getItem('myGameHigh')||'{}')||{}; } catch(e) { high={}; try { localStorage.removeItem('myGameHigh'); } catch(_) {} }
@@ -70,7 +72,7 @@ function saveBest(id,score){if(score>(high[id]||0)){high[id]=score;localStorage.
 function renderCards(filter=''){grid.innerHTML='';let list=games.filter(g=>(g.name+' '+g.tag+' '+g.desc).toLowerCase().includes(filter.toLowerCase()));$('#noResults').style.display=list.length?'none':'block';list.forEach(g=>{const el=document.createElement('article');el.className='card';el.innerHTML=`<div class="cover" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><span class="tag">${g.tag}</span>${g.icon}</div><div class="card-body"><h3>${g.name}</h3><p>${g.desc}</p><div class="card-foot"><span class="best">🏆 Best: ${high[g.id]||0}</span><button class="play">PLAY ▶</button></div></div>`;el.querySelector('button').onclick=()=>openGame(g.id);grid.appendChild(el)})}
 $('#search').addEventListener('input',e=>renderCards(e.target.value));$('#homeBtn').onclick=showHome;$('#backBtn').onclick=showHome;
 function showHome(){cleanup();current=null;$('#gameView').style.display='none';$('#home').style.display='block';$('#homeBtn').style.display='none';renderCards($('#search').value)}
-function openGame(id){cleanup();current=games.find(g=>g.id===id);$('#home').style.display='none';$('#gameView').style.display='block';$('#homeBtn').style.display='block';$('#gameTitle').textContent=current.name;$('#gameInfo').textContent=current.how;$('#canvasWrap').innerHTML='';$('#gameControls').innerHTML='';$('#message').textContent='';$('#gameView').scrollIntoView({behavior:'smooth'});const api={wrap:$('#canvasWrap'),controls:$('#gameControls'),message:$('#message'),best:s=>{saveBest(id,s);renderCards($('#search').value)},setCleanup:f=>cleanup=f};try{({runner:gameRunner,racer:gameRacer,snake:gameSnake,breakout:gameBreakout,memory:gameMemory,tictactoe:gameTicTacToe,clicker:gameClicker,whack:gameWhack,guess:gameGuess,ludo:gameLudo,carrom:gameCarrom,lights:gameLights})[id](api)}catch(e){console.error(e);api.message.textContent='গেম চালু করতে সমস্যা হয়েছে। পেজটি রিফ্রেশ করে আবার চেষ্টা করো।'}}
+function openGame(id){cleanup();current=games.find(g=>g.id===id);$('#home').style.display='none';$('#gameView').style.display='block';$('#homeBtn').style.display='block';$('#gameTitle').textContent=current.name;$('#gameInfo').textContent=current.how;$('#canvasWrap').innerHTML='';$('#gameControls').innerHTML='';$('#message').textContent='';$('#gameView').scrollIntoView({behavior:'smooth'});const api={wrap:$('#canvasWrap'),controls:$('#gameControls'),message:$('#message'),best:s=>{saveBest(id,s);renderCards($('#search').value)},setCleanup:f=>cleanup=f};try{({runner:gameRunner,racer:gameRacer,snake:gameSnake,breakout:gameBreakout,memory:gameMemory,tictactoe:gameTicTacToe,clicker:gameClicker,whack:gameWhack,guess:gameGuess,ludo:gameLudo,carrom:gameCarrom,chess:gameChess,pool:gamePool,lights:gameLights})[id](api)}catch(e){console.error(e);api.message.textContent='গেম চালু করতে সমস্যা হয়েছে। পেজটি রিফ্রেশ করে আবার চেষ্টা করো।'}}
 function button(text,fn,host=$('#gameControls')){let b=document.createElement('button');b.textContent=text;b.onclick=fn;host.appendChild(b);return b}
 function canvas(api,w=800,h=440){const c=document.createElement('canvas');c.width=w;c.height=h;c.style.maxHeight='68vh';api.wrap.appendChild(c);const x=c.getContext('2d');return {c,x,w,h}}
 function fitCanvas(c){return c}
@@ -306,6 +308,90 @@ function gameCarrom(a){
  button('Mode: 2 Players',()=>{mode=mode==='local'?'cpu':'local';reset();a.message.textContent=mode==='cpu'?'তুমি বনাম কম্পিউটার। স্ট্রাইকার টেনে শট নাও।':'একই ডিভাইসে ২ জন। স্ট্রাইকার টেনে শট নাও।'});
  button('New Game',reset);
  reset();a.setCleanup(()=>{cancelAnimationFrame(raf);clearTimeout(cpuTimer);c.removeEventListener('pointerdown',down);c.removeEventListener('pointermove',move);c.removeEventListener('pointerup',up);c.removeEventListener('pointercancel',up)});
+}
+function gameChess(a){
+ const {c,x,w,h}=canvas(a,640,640);const N=8,cell=80;
+ const glyph={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+ let board,turn='w',selected=null,legal=[],mode='local',over=false,aiTimer=null,lastMove=null;
+ function fresh(){clearTimeout(aiTimer);board=[
+ ['r','n','b','q','k','b','n','r'],Array(8).fill('p'),Array(8).fill(null),Array(8).fill(null),Array(8).fill(null),Array(8).fill(null),Array(8).fill('P'),['R','N','B','Q','K','B','N','R']
+ ];turn='w';selected=null;legal=[];over=false;lastMove=null;a.message.textContent='সাদা ঘুঁটি প্রথম চাল দেবে।';draw()}
+ function clone(b){return b.map(row=>row.slice())}
+ function side(p){return p&&((p===p.toUpperCase())?'w':'b')}
+ function inside(r,col){return r>=0&&r<8&&col>=0&&col<8}
+ function findKing(b,s){const k=s==='w'?'K':'k';for(let r=0;r<8;r++)for(let col=0;col<8;col++)if(b[r][col]===k)return [r,col];return null}
+ function attacked(b,r,col,by){
+  const pawn=by==='w'?'P':'p',pr=by==='w'?r+1:r-1;
+  for(const dc of [-1,1])if(inside(pr,col+dc)&&b[pr][col+dc]===pawn)return true;
+  for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){let rr=r+dr,cc=col+dc;if(inside(rr,cc)){let p=b[rr][cc];if(p&&side(p)===by&&p.toLowerCase()==='n')return true}}
+  for(const [dr,dc] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]){let rr=r+dr,cc=col+dc,step=1;while(inside(rr,cc)){const p=b[rr][cc];if(p){if(side(p)===by){const q=p.toLowerCase();if(q==='q'||(step===1&&q==='k')||(dr===0||dc===0?q==='r':q==='b'))return true}break}rr+=dr;cc+=dc;step++}}
+  return false
+ }
+ function inCheck(b,s){const k=findKing(b,s);return k?attacked(b,k[0],k[1],s==='w'?'b':'w'):true}
+ function pseudo(b,r,col){
+  const p=b[r][col];if(!p)return [];const s=side(p),q=p.toLowerCase(),out=[];const add=(rr,cc)=>{if(inside(rr,cc)&&side(b[rr][cc])!==s)out.push([rr,cc])};
+  if(q==='p'){const d=s==='w'?-1:1,start=s==='w'?6:1;if(inside(r+d,col)&&!b[r+d][col]){out.push([r+d,col]);if(r===start&&!b[r+2*d][col])out.push([r+2*d,col])}for(const dc of [-1,1])if(inside(r+d,col+dc)&&b[r+d][col+dc]&&side(b[r+d][col+dc])!==s)out.push([r+d,col+dc]);if(lastMove&&lastMove.piece.toLowerCase()==='p'&&Math.abs(lastMove.from[0]-lastMove.to[0])===2&&lastMove.to[0]===r&&Math.abs(lastMove.to[1]-col)===1)out.push([r+d,lastMove.to[1]]);}
+  else if(q==='n'){for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]])add(r+dr,col+dc)}
+  else if(q==='k'){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)add(r+dr,col+dc)}
+  else {const dirs=[];if(q==='b'||q==='q')dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);if(q==='r'||q==='q')dirs.push([-1,0],[1,0],[0,-1],[0,1]);for(const [dr,dc] of dirs){let rr=r+dr,cc=col+dc;while(inside(rr,cc)){if(!b[rr][cc])out.push([rr,cc]);else{if(side(b[rr][cc])!==s)out.push([rr,cc]);break}rr+=dr;cc+=dc}}}
+  return out
+ }
+ function apply(b,from,to,track=false){
+  const [r,col]=from,[rr,cc]=to,p=b[r][col],q=p.toLowerCase();b[rr][cc]=p;b[r][col]=null;
+  if(q==='p'&&Math.abs(cc-col)===1&&!track&&!lastMove&&false){}
+  if(q==='p'&&Math.abs(cc-col)===1&&!track&&!b[rr][cc]&&false){}
+  if(q==='p'&&Math.abs(cc-col)===1&&rr!==r+(side(p)==='w'?-1:1)&&!track){}
+  if(q==='p'&&Math.abs(cc-col)===1&&rr!==r+(side(p)==='w'?-1:1)&&false){}
+  if(q==='p'&&(rr===0||rr===7))b[rr][cc]=side(p)==='w'?'Q':'q';
+  return b
+ }
+ function legalMoves(b,r,col){
+  const p=b[r][col];if(!p)return [];const s=side(p);
+  return pseudo(b,r,col).filter(to=>{const bb=clone(b);apply(bb,[r,col],to,true);return !inCheck(bb,s)})
+ }
+ function allMoves(b,s){const out=[];for(let r=0;r<8;r++)for(let col=0;col<8;col++)if(side(b[r][col])===s)for(const to of legalMoves(b,r,col))out.push({from:[r,col],to});return out}
+ function gameOverCheck(){const moves=allMoves(board,turn);if(!moves.length){over=true;a.message.textContent=inCheck(board,turn)?(turn==='w'?'কালো':'সাদা')+' Checkmate! জিতেছে।': 'Stalemate — ড্র!';if(turn==='b'&&mode==='cpu')a.best(1);return true}a.message.textContent=(turn==='w'?'সাদা':'কালো')+'-এর পালা'+(inCheck(board,turn)?' — CHECK!':'');return false}
+ function doMove(from,to){
+  const p=board[from[0]][from[1]],target=board[to[0]][to[1]];
+  if(p.toLowerCase()==='p'&&Math.abs(to[1]-from[1])===1&&!target&&lastMove&&lastMove.piece.toLowerCase()==='p'&&lastMove.to[0]===from[0])board[from[0]][to[1]]=null;
+  apply(board,from,to);lastMove={from,to,piece:p};turn=turn==='w'?'b':'w';selected=null;legal=[];draw();if(gameOverCheck())draw();else if(mode==='cpu'&&turn==='b')aiTimer=setTimeout(aiMove,450)
+ }
+ function aiMove(){if(mode!=='cpu'||turn!=='b'||over)return;const moves=allMoves(board,'b');if(!moves.length){gameOverCheck();draw();return}const vals={p:10,n:30,b:32,r:50,q:90,k:900};moves.sort((m1,m2)=>{const v1=(board[m1.to[0]][m1.to[1]]?vals[board[m1.to[0]][m1.to[1]].toLowerCase()]:0)+Math.random()*3;const v2=(board[m2.to[0]][m2.to[1]]?vals[board[m2.to[0]][m2.to[1]].toLowerCase()]:0)+Math.random()*3;return v2-v1});doMove(moves[0].from,moves[0].to)}
+ function click(e){if(over||(mode==='cpu'&&turn==='b'))return;const r=c.getBoundingClientRect(),col=Math.floor((e.clientX-r.left)*8/r.width),row=Math.floor((e.clientY-r.top)*8/r.height);if(!inside(row,col))return;
+  if(selected&&legal.some(m=>m[0]===row&&m[1]===col)){doMove(selected,[row,col]);return}
+  if(side(board[row][col])===turn){selected=[row,col];legal=legalMoves(board,row,col)}else{selected=null;legal=[]}draw()
+ }
+ function draw(){x.clearRect(0,0,w,h);for(let r=0;r<8;r++)for(let col=0;col<8;col++){const light=(r+col)%2===0;x.fillStyle=light?'#f1dfbd':'#75966d';x.fillRect(col*cell,r*cell,cell,cell);if(selected&&selected[0]===r&&selected[1]===col){x.fillStyle='#ffd16699';x.fillRect(col*cell,r*cell,cell,cell)}if(legal.some(m=>m[0]===r&&m[1]===col)){x.fillStyle=board[r][col]?'#ef476f99':'#1fc98b88';x.beginPath();x.arc(col*cell+40,r*cell+40,board[r][col]?30:10,0,Math.PI*2);x.fill()}const p=board[r][col];if(p){x.font='58px "Arial Unicode MS", "Segoe UI Symbol", serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle=side(p)==='w'?'#fffaf0':'#20202b';x.shadowColor=side(p)==='w'?'#333':'#fff';x.shadowBlur=2;x.fillText(glyph[p],col*cell+40,r*cell+41);x.shadowBlur=0}}x.strokeStyle='#d6c29d';x.lineWidth=3;x.strokeRect(1,1,w-2,h-2)}
+ c.addEventListener('pointerdown',click);button('Mode: 2 Players',()=>{mode=mode==='local'?'cpu':'local';fresh();a.message.textContent=mode==='cpu'?'তুমি সাদা, কম্পিউটার কালো।':'একই ডিভাইসে ২ জন খেলো।'});button('New Game',fresh);fresh();a.setCleanup(()=>{clearTimeout(aiTimer);c.removeEventListener('pointerdown',click)})
+}
+function gamePool(a){
+ const {c,x,w,h}=canvas(a,800,520);const table={l:42,r:758,t:42,b:478},pockets=[{x:48,y:48},{x:400,y:43},{x:752,y:48},{x:48,y:472},{x:400,y:477},{x:752,y:472}],pr=23;
+ let mode='local',turn=0,balls=[],aim=null,drag=false,settled=true,raf=0,shotPocketed=false,groups=[null,null],winner=null,aiTimer=null,shotStart=null;
+ function ball(id,n,bx,by,r=10){return {id,n,x:bx,y:by,vx:0,vy:0,r,alive:true}}
+ function reset(){cancelAnimationFrame(raf);clearTimeout(aiTimer);turn=0;groups=[null,null];winner=null;aim=null;drag=false;settled=true;shotPocketed=false;balls=[];balls.push(ball(0,0,190,260,10));const cx=535,cy=260,spacing=21;let n=1;for(let row=0;row<5;row++)for(let col=0;col<=row;col++){if(n>15)break;const bx=cx+row*spacing*.88,by=cy+(col-row/2)*spacing;balls.push(ball(n,n,bx,by,10));n++}a.message.textContent='সাদা কিউ বল টেনে পিছনে ছেড়ে শট নাও। ৮ নম্বর বল শেষে ফেলতে হবে।';draw()}
+ function cue(){return balls.find(b=>b.n===0&&b.alive)}
+ function stopped(){return balls.every(b=>!b.alive||Math.hypot(b.vx,b.vy)<.09)}
+ function pnt(e){const r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*w/r.width,y:(e.clientY-r.top)*h/r.height}}
+ function down(e){if(!settled||winner!==null||(mode==='cpu'&&turn===1))return;const p=pnt(e),s=cue();if(s&&Math.hypot(p.x-s.x,p.y-s.y)<42){drag=true;aim=p;c.setPointerCapture(e.pointerId);draw()}}
+ function move(e){if(drag){aim=pnt(e);draw()}}
+ function up(e){if(!drag)return;const p=pnt(e),s=cue();drag=false;aim=null;if(s){const dx=s.x-p.x,dy=s.y-p.y,len=Math.hypot(dx,dy);if(len>5){const speed=Math.min(17,len*.15);s.vx=dx/len*speed;s.vy=dy/len*speed;settled=false;shotPocketed=false;shotStart={cuePocket:false,eightPocket:false,firstHit:null};a.message.textContent='শট চলছে…'}}draw()}
+ c.addEventListener('pointerdown',down);c.addEventListener('pointermove',move);c.addEventListener('pointerup',up);c.addEventListener('pointercancel',up);
+ function collide(a1,b1){const dx=b1.x-a1.x,dy=b1.y-a1.y,d=Math.hypot(dx,dy),min=a1.r+b1.r;if(!d||d>=min)return;const nx=dx/d,ny=dy/d,over=min-d;a1.x-=nx*over/2;a1.y-=ny*over/2;b1.x+=nx*over/2;b1.y+=ny*over/2;const rel=(a1.vx-b1.vx)*nx+(a1.vy-b1.vy)*ny;if(rel>0){a1.vx-=rel*nx;a1.vy-=rel*ny;b1.vx+=rel*nx;b1.vy+=rel*ny}if(a1.n===0&&shotStart&&!shotStart.firstHit)shotStart.firstHit=b1.n;if(b1.n===0&&shotStart&&!shotStart.firstHit)shotStart.firstHit=a1.n}
+ function endShot(){settled=true;if(!cue()){balls.push(ball(0,0,turn===0?190:610,260,10));a.message.textContent='ফাউল: কিউ বল পকেটে গেছে।'}if(shotStart&&shotStart.eightPocket){const myGroup=groups[turn];const left=balls.some(b=>b.alive&&b.n>0&&b.n<8&&groups[turn]==='solids')||balls.some(b=>b.alive&&b.n>8&&groups[turn]==='stripes');if(myGroup&&left){winner=1-turn;a.message.textContent='ভুল সময়ে ৮ বল! প্রতিপক্ষ জিতেছে।'}else{winner=turn;a.message.textContent=(turn===0?'Player 1':'Player 2')+' 8 Ball Pool জিতেছে!';a.best(1)}draw();return}
+  if(!groups[0]&&!groups[1]){const pocketed=balls.filter(b=>!b.alive&&b.n>0&&b.n<16);const last=pocketed[pocketed.length-1];if(last&&last.n!==8){groups[turn]=last.n<8?'solids':'stripes';groups[1-turn]=groups[turn]==='solids'?'stripes':'solids'}}
+  if(shotStart&&shotStart.cuePocket){turn=1-turn;placeCue()}else if(!shotPocketed)turn=1-turn;shotPocketed=false;shotStart=null;a.message.textContent='পালা: '+(turn===0?'Player 1':mode==='cpu'?'কম্পিউটার':'Player 2')+'.';if(mode==='cpu'&&turn===1)aiTimer=setTimeout(cpuShot,650)
+ }
+ function placeCue(){let s=cue();if(!s){s=ball(0,0,turn===0?190:610,260,10);balls.push(s)}s.alive=true;s.x=turn===0?190:610;s.y=260;s.vx=s.vy=0}
+ function cpuShot(){if(mode!=='cpu'||turn!==1||!settled||winner!==null)return;const s=cue();if(!s)return;const targets=balls.filter(b=>b.alive&&b.n>0&&b.n<8);const target=targets[Math.floor(Math.random()*targets.length)]||balls.find(b=>b.alive&&b.n>0);if(!target)return;const dx=target.x-s.x,dy=target.y-s.y,len=Math.hypot(dx,dy)||1;s.vx=dx/len*12;s.vy=dy/len*12;settled=false;shotPocketed=false;shotStart={cuePocket:false,eightPocket:false,firstHit:null}}
+ function physics(){balls.forEach(b=>{if(!b.alive)return;b.x+=b.vx;b.y+=b.vy;b.vx*=.991;b.vy*=.991;if(Math.abs(b.vx)<.03)b.vx=0;if(Math.abs(b.vy)<.03)b.vy=0;if(pockets.some(p=>Math.hypot(b.x-p.x,b.y-p.y)<pr)){b.alive=false;if(b.n===0){if(shotStart)shotStart.cuePocket=true}else if(b.n===8){if(shotStart)shotStart.eightPocket=true}else shotPocketed=true;return}if(b.x-b.r<table.l){b.x=table.l+b.r;b.vx=Math.abs(b.vx)*.9}if(b.x+b.r>table.r){b.x=table.r-b.r;b.vx=-Math.abs(b.vx)*.9}if(b.y-b.r<table.t){b.y=table.t+b.r;b.vy=Math.abs(b.vy)*.9}if(b.y+b.r>table.b){b.y=table.b-b.r;b.vy=-Math.abs(b.vy)*.9}});
+  const live=balls.filter(b=>b.alive);for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++)collide(live[i],live[j]);if(stopped())endShot()
+ }
+ function draw(){x.clearRect(0,0,w,h);x.fillStyle='#754321';x.fillRect(0,0,w,h);x.fillStyle='#0b6345';x.fillRect(table.l,table.t,table.r-table.l,table.b-table.t);x.strokeStyle='#c08a50';x.lineWidth=8;x.strokeRect(table.l,table.t,table.r-table.l,table.b-table.t);pockets.forEach(p=>{x.fillStyle='#101010';x.beginPath();x.arc(p.x,p.y,pr,0,Math.PI*2);x.fill()});x.strokeStyle='#b2e3c7';x.lineWidth=1.5;x.beginPath();x.arc(190,260,82,0,Math.PI*2);x.moveTo(190,178);x.lineTo(190,342);x.stroke();
+  balls.forEach(b=>{if(!b.alive)return;x.fillStyle=b.n===0?'#fff':b.n===8?'#141414':b.n<=7?'#f2c94c':'#4c9ee8';x.beginPath();x.arc(b.x,b.y,b.r,0,Math.PI*2);x.fill();x.strokeStyle='#ffffff99';x.lineWidth=1.5;x.stroke();if(b.n>0){x.fillStyle='#fff';x.font='bold 9px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText(String(b.n),b.x,b.y)}})
+  if(drag&&aim){const s=cue();if(s){x.strokeStyle='#fff';x.lineWidth=2;x.setLineDash([7,5]);x.beginPath();x.moveTo(s.x,s.y);x.lineTo(s.x+(s.x-aim.x),s.y+(s.y-aim.y));x.stroke();x.setLineDash([])}}
+  x.fillStyle='#fff';x.font='bold 17px system-ui';x.fillText('P1: '+(groups[0]||'open'),65,25);x.fillText((mode==='cpu'?'CPU':'P2')+': '+(groups[1]||'open'),600,25);if(!settled)physics();raf=requestAnimationFrame(draw)
+ }
+ button('Mode: 2 Players',()=>{mode=mode==='local'?'cpu':'local';reset();a.message.textContent=mode==='cpu'?'তুমি বনাম কম্পিউটার।':'একই ডিভাইসে ২ জন খেলো।'});button('New Game',reset);reset();a.setCleanup(()=>{cancelAnimationFrame(raf);clearTimeout(aiTimer);c.removeEventListener('pointerdown',down);c.removeEventListener('pointermove',move);c.removeEventListener('pointerup',up);c.removeEventListener('pointercancel',up)})
 }
 function gameLights(a){
  const {c,x,w,h}=canvas(a,600,500);let board=[];function newBoard(){board=Array(25).fill(false);for(let k=0;k<18;k++){const i=Math.floor(Math.random()*25);[i,i-5,i+5,i%5?i-1:-1,i%5<4?i+1:-1].forEach(j=>{if(j>=0&&j<25)board[j]=!board[j]})}draw();a.message.textContent='সব আলো বন্ধ করো।'}function draw(){x.fillStyle='#111a31';x.fillRect(0,0,w,h);board.forEach((on,i)=>{let col=i%5,row=Math.floor(i/5),xx=58+col*98,yy=24+row*91;x.fillStyle=on?'#ffe66d':'#26324d';x.shadowColor=on?'#ffd166':'transparent';x.shadowBlur=on?18:0;x.beginPath();x.roundRect(xx,yy,78,70,12);x.fill();x.shadowBlur=0;x.strokeStyle='#ffffff25';x.stroke()})}
