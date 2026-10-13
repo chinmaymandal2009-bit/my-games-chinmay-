@@ -61,6 +61,8 @@ const games=[
 {id:'clicker',name:'Star Clicker',icon:'⭐',tag:'SCORE',desc:'সময় শেষ হওয়ার আগে যত পারো তারা ট্যাপ করো।',colors:['#fee440','#975a16'],how:'Start চাপো, তারপর বড় তারাটিতে দ্রুত ট্যাপ করো।',best:'clicker'},
 {id:'whack',name:'Whack-a-Mole',icon:'🐹',tag:'REACTION',desc:'যে গর্তে মোল দেখা যায়, তাতে দ্রুত চাপো।',colors:['#80b918','#31572c'],how:'Start চাপো এবং মোল দেখা দিলে ট্যাপ করো।',best:'whack'},
 {id:'guess',name:'Number Guess',icon:'🔢',tag:'BRAIN',desc:'১ থেকে ১০০-এর মধ্যে গোপন সংখ্যা অনুমান করো।',colors:['#00f5d4','#145c68'],how:'সংখ্যা লিখে Guess চাপো; বেশি না কম জানানো হবে।',best:'guess'},
+{id:'ludo',name:'Ludo',icon:'🎲',tag:'BOARD GAME',desc:'পাশা রোল করো, ঘুঁটি চালাও এবং আগে সব ঘুঁটি ঘরে পৌঁছাও।',colors:['#ef476f','#284b9b'],how:'Roll Dice চাপো; ৬ পেলে ঘুঁটি বের হবে। ঘুঁটি বেছে Move চাপো।',best:'ludo'},
+{id:'carrom',name:'Carrom',icon:'🔴',tag:'PHYSICS GAME',desc:'স্ট্রাইকার টেনে শট নাও, গুটি পকেটে ফেলো এবং পয়েন্ট জিতো।',colors:['#c18a52','#4a2e23'],how:'স্ট্রাইকারে টাচ করে পিছনে টেনে ছেড়ে দাও—এটাই শট।',best:'carrom'},
 {id:'lights',name:'Lights Out',icon:'💡',tag:'LOGIC',desc:'লাইট বন্ধ করো—একটি টাইল চাপলে পাশেরগুলিও বদলাবে।',colors:['#f8961e','#8a3d28'],how:'সব আলো বন্ধ করাই লক্ষ্য। টাইল চাপলে তার চারপাশ বদলায়।',best:'lights'}
 ];
 const $=s=>document.querySelector(s); const grid=$('#grid'); let current=null, cleanup=()=>{}, high={}; try { high=JSON.parse(localStorage.getItem('myGameHigh')||'{}')||{}; } catch(e) { high={}; try { localStorage.removeItem('myGameHigh'); } catch(_) {} }
@@ -68,7 +70,7 @@ function saveBest(id,score){if(score>(high[id]||0)){high[id]=score;localStorage.
 function renderCards(filter=''){grid.innerHTML='';let list=games.filter(g=>(g.name+' '+g.tag+' '+g.desc).toLowerCase().includes(filter.toLowerCase()));$('#noResults').style.display=list.length?'none':'block';list.forEach(g=>{const el=document.createElement('article');el.className='card';el.innerHTML=`<div class="cover" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><span class="tag">${g.tag}</span>${g.icon}</div><div class="card-body"><h3>${g.name}</h3><p>${g.desc}</p><div class="card-foot"><span class="best">🏆 Best: ${high[g.id]||0}</span><button class="play">PLAY ▶</button></div></div>`;el.querySelector('button').onclick=()=>openGame(g.id);grid.appendChild(el)})}
 $('#search').addEventListener('input',e=>renderCards(e.target.value));$('#homeBtn').onclick=showHome;$('#backBtn').onclick=showHome;
 function showHome(){cleanup();current=null;$('#gameView').style.display='none';$('#home').style.display='block';$('#homeBtn').style.display='none';renderCards($('#search').value)}
-function openGame(id){cleanup();current=games.find(g=>g.id===id);$('#home').style.display='none';$('#gameView').style.display='block';$('#homeBtn').style.display='block';$('#gameTitle').textContent=current.name;$('#gameInfo').textContent=current.how;$('#canvasWrap').innerHTML='';$('#gameControls').innerHTML='';$('#message').textContent='';$('#gameView').scrollIntoView({behavior:'smooth'});const api={wrap:$('#canvasWrap'),controls:$('#gameControls'),message:$('#message'),best:s=>{saveBest(id,s);renderCards($('#search').value)},setCleanup:f=>cleanup=f};try{({runner:gameRunner,racer:gameRacer,snake:gameSnake,breakout:gameBreakout,memory:gameMemory,tictactoe:gameTicTacToe,clicker:gameClicker,whack:gameWhack,guess:gameGuess,lights:gameLights})[id](api)}catch(e){console.error(e);api.message.textContent='গেম চালু করতে সমস্যা হয়েছে। পেজটি রিফ্রেশ করে আবার চেষ্টা করো।'}}
+function openGame(id){cleanup();current=games.find(g=>g.id===id);$('#home').style.display='none';$('#gameView').style.display='block';$('#homeBtn').style.display='block';$('#gameTitle').textContent=current.name;$('#gameInfo').textContent=current.how;$('#canvasWrap').innerHTML='';$('#gameControls').innerHTML='';$('#message').textContent='';$('#gameView').scrollIntoView({behavior:'smooth'});const api={wrap:$('#canvasWrap'),controls:$('#gameControls'),message:$('#message'),best:s=>{saveBest(id,s);renderCards($('#search').value)},setCleanup:f=>cleanup=f};try{({runner:gameRunner,racer:gameRacer,snake:gameSnake,breakout:gameBreakout,memory:gameMemory,tictactoe:gameTicTacToe,clicker:gameClicker,whack:gameWhack,guess:gameGuess,ludo:gameLudo,carrom:gameCarrom,lights:gameLights})[id](api)}catch(e){console.error(e);api.message.textContent='গেম চালু করতে সমস্যা হয়েছে। পেজটি রিফ্রেশ করে আবার চেষ্টা করো।'}}
 function button(text,fn,host=$('#gameControls')){let b=document.createElement('button');b.textContent=text;b.onclick=fn;host.appendChild(b);return b}
 function canvas(api,w=800,h=440){const c=document.createElement('canvas');c.width=w;c.height=h;c.style.maxHeight='68vh';api.wrap.appendChild(c);const x=c.getContext('2d');return {c,x,w,h}}
 function fitCanvas(c){return c}
@@ -166,6 +168,144 @@ function gameWhack(a){
 }
 function gameGuess(a){
  const box=document.createElement('div');box.style.cssText='padding:30px 18px;min-height:300px;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#124a58,#101a32);border-radius:12px';box.innerHTML='<div><div style="font-size:60px">🔢</div><h2 style="margin:5px">১ থেকে ১০০</h2><p style="color:#b7d8e0">আমি একটি সংখ্যা ভেবেছি। তুমি কি ধরতে পারবে?</p><input id="guessInput" type="number" min="1" max="100" placeholder="সংখ্যা লেখো" style="padding:12px;width:160px;border-radius:10px;border:1px solid #ffffff44;background:#0b1628;color:white"><div id="guessMsg" style="min-height:28px;padding:12px;color:#d5f7ee">শুরু করো!</div></div>';a.wrap.appendChild(box);let target=Math.floor(Math.random()*100)+1,tries=0,done=false;function submit(){let v=Number(box.querySelector('input').value),msg=box.querySelector('#guessMsg');if(!v||v<1||v>100){msg.textContent='১ থেকে ১০০-এর মধ্যে সংখ্যা লেখো।';return}if(done)return;tries++;if(v===target){done=true;msg.textContent='🎉 ঠিক ধরেছ! চেষ্টা: '+tries;a.best(Math.max(1,101-tries))}else msg.textContent=v<target?'আরও বড় সংখ্যা চেষ্টা করো ↑':'আরও ছোট সংখ্যা চেষ্টা করো ↓'}button('Guess',submit);button('New Number',()=>{target=Math.floor(Math.random()*100)+1;tries=0;done=false;box.querySelector('input').value='';box.querySelector('#guessMsg').textContent='নতুন সংখ্যা তৈরি হয়েছে।'});box.querySelector('input').addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
+}
+function gameLudo(a){
+ const {c,x,w,h}=canvas(a,600,600);
+ const colors=['#e63946','#2d9cdb','#f4c542','#43aa65'],names=['লাল','নীল','হলুদ','সবুজ'];
+ const center={x:300,y:300},R=202,track=Array.from({length:52},(_,i)=>({x:300+Math.cos(-Math.PI/2+i*Math.PI*2/52)*R,y:300+Math.sin(-Math.PI/2+i*Math.PI*2/52)*R}));
+ let mode='local',players=4,turn=0,dice=null,tokens=[],winner=-1,aiTimer=null;
+ function reset(){
+  clearTimeout(aiTimer);players=mode==='cpu'?2:(mode==='local2'?2:mode==='local3'?3:4);turn=0;dice=null;winner=-1;
+  tokens=Array.from({length:players},(_,p)=>Array.from({length:4},()=>({progress:-1})));
+  a.message.textContent='লাল খেলোয়াড়ের পালা। পাশা রোল করো।';draw();
+ }
+ function basePoint(p,t){const q=[{x:110,y:110},{x:490,y:110},{x:490,y:490},{x:110,y:490}][p];const offsets=[[-22,-22],[22,-22],[-22,22],[22,22]][t];return {x:q.x+offsets[0],y:q.y+offsets[1]}}
+ function tokenPoint(p,t){
+  const pr=tokens[p][t].progress;
+  if(pr<0)return basePoint(p,t);
+  if(pr<52)return track[(p*13+pr)%52];
+  const entry=track[(p*13+51)%52],k=(pr-51)/6;
+  return {x:entry.x+(300-entry.x)*k,y:entry.y+(300-entry.y)*k};
+ }
+ function legal(p,t){const pr=tokens[p][t].progress;return pr<57&&(pr>=0||dice===6)&&(pr<0||pr+dice<=57)}
+ function switchTurn(){
+  dice=null;turn=(turn+1)%players;draw();
+  if(winner<0&&mode==='cpu'&&turn===1)aiTimer=setTimeout(aiMove,750);
+ }
+ function roll(){
+  if(winner>=0||dice!==null||(mode==='cpu'&&turn===1))return;
+  dice=1+Math.floor(Math.random()*6);a.message.textContent=names[turn]+' খেলোয়াড়ের পাশা: '+dice+'। যে ঘুঁটি চালাবে সেটি বেছে নাও।';
+  draw();
+  if(![0,1,2,3].some(t=>legal(turn,t))){a.message.textContent+=' কোনো বৈধ চাল নেই—পালা বদলাবে।';aiTimer=setTimeout(switchTurn,700)}
+ }
+ function moveToken(t){
+  if(winner>=0||dice===null||!legal(turn,t))return;
+  const tok=tokens[turn][t];
+  if(tok.progress<0)tok.progress=0;else tok.progress+=dice;
+  if(tok.progress<52){
+   const idx=(turn*13+tok.progress)%52;
+   if(![0,13,26,39].includes(idx)){
+    for(let p=0;p<players;p++)if(p!==turn)for(const enemy of tokens[p])if(enemy.progress>=0&&enemy.progress<52&&(p*13+enemy.progress)%52===idx)enemy.progress=-1;
+   }
+  }
+  const finished=tokens[turn].every(q=>q.progress>=57);
+  if(finished){winner=turn;a.message.textContent='🎉 '+names[turn]+' খেলোয়াড় জিতেছে! New Game চাপো।';a.best(1);draw();return}
+  const keep=dice===6;draw();
+  if(keep){dice=null;a.message.textContent=names[turn]+' আবার পাশা রোল করতে পারবে।'}else switchTurn();
+ }
+ function aiMove(){
+  if(winner>=0||turn!==1||mode!=='cpu')return;
+  if(dice===null){dice=1+Math.floor(Math.random()*6);a.message.textContent='কম্পিউটারের পাশা: '+dice;draw()}
+  const choices=[0,1,2,3].filter(t=>legal(turn,t));
+  if(!choices.length){switchTurn();return}
+  let pick=choices.find(t=>tokens[turn][t].progress>=0&&tokens[turn][t].progress+dice>=57);
+  if(pick===undefined)pick=choices.find(t=>tokens[turn][t].progress>=0&&tokens[turn][t].progress<52&&[0,13,26,39].includes((turn*13+tokens[turn][t].progress+dice)%52));
+  if(pick===undefined)pick=choices.find(t=>tokens[turn][t].progress<0);
+  if(pick===undefined)pick=choices[Math.floor(Math.random()*choices.length)];
+  moveToken(pick);
+  if(winner<0&&turn===1&&dice===null)aiTimer=setTimeout(aiMove,600);
+ }
+ function draw(){
+  x.clearRect(0,0,w,h);const bg=x.createRadialGradient(300,260,20,300,300,340);bg.addColorStop(0,'#f8f1df');bg.addColorStop(1,'#d8c6a4');x.fillStyle=bg;x.fillRect(0,0,w,h);
+  x.fillStyle='#fff8e9';x.beginPath();x.arc(300,300,226,0,Math.PI*2);x.fill();x.strokeStyle='#7a6244';x.lineWidth=3;x.stroke();
+  track.forEach((pt,i)=>{x.fillStyle=[0,13,26,39].includes(i)?colors[Math.floor(i/13)]:'#fffaf0';x.strokeStyle='#b7a68b';x.lineWidth=1;x.beginPath();x.arc(pt.x,pt.y,13,0,Math.PI*2);x.fill();x.stroke();if([0,13,26,39].includes(i)){x.fillStyle='#fff';x.beginPath();x.arc(pt.x,pt.y,5,0,Math.PI*2);x.fill()}});
+  for(let p=0;p<4;p++){const q=[{x:22,y:22},{x:418,y:22},{x:418,y:418},{x:22,y:418}][p];x.fillStyle=colors[p];x.globalAlpha=p<players?0.95:0.2;x.beginPath();x.roundRect(q.x,q.y,160,160,22);x.fill();x.globalAlpha=1;x.fillStyle='#ffffffcc';x.beginPath();x.roundRect(q.x+23,q.y+23,114,114,18);x.fill();for(let t=0;t<4;t++){const bp=basePoint(p,t);x.fillStyle=colors[p];x.beginPath();x.arc(bp.x,bp.y,13,0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=2;x.stroke()}}
+  x.fillStyle='#fff5d8';x.beginPath();x.arc(300,300,31,0,Math.PI*2);x.fill();x.strokeStyle='#8b7355';x.lineWidth=2;x.stroke();x.fillStyle='#2b2530';x.font='bold 17px system-ui';x.textAlign='center';x.fillText('HOME',300,306);x.textAlign='left';
+  for(let p=0;p<players;p++)for(let t=0;t<4;t++){const pt=tokenPoint(p,t);x.fillStyle=colors[p];x.beginPath();x.arc(pt.x,pt.y,10,0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=2;x.stroke();x.fillStyle='#fff';x.font='bold 10px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText(String(t+1),pt.x,pt.y);x.textAlign='left';x.textBaseline='alphabetic'}
+  x.fillStyle='#222';x.font='bold 15px system-ui';x.fillText('Turn: '+names[turn],18,590);x.fillStyle='#fff';x.strokeStyle='#8b7355';x.lineWidth=2;x.beginPath();x.roundRect(510,254,64,64,12);x.fill();x.stroke();x.fillStyle='#202020';x.font='bold 28px system-ui';x.textAlign='center';x.fillText(dice===null?'⚄':String(dice),542,294);x.textAlign='left';
+  if(winner>=0){x.fillStyle='#111c';x.fillRect(70,250,460,90);x.fillStyle='#fff';x.font='bold 27px system-ui';x.textAlign='center';x.fillText(names[winner]+' WINS!',300,305);x.textAlign='left'}
+ }
+ button('🎲 Roll Dice',roll);
+ for(let t=0;t<4;t++)button('Move '+(t+1),()=>moveToken(t));
+ button('Mode: '+modeLabel(),()=>{mode=mode==='local'?'local2':mode==='local2'?'local3':mode==='local3'?'cpu':'local';reset();a.message.textContent='Mode: '+modeLabel()+'. New game started.'});
+ button('New Game',reset);
+ function modeLabel(){return ({local:'4 Players',local2:'2 Players',local3:'3 Players',cpu:'Vs Computer'})[mode]}
+ a.message.textContent='Ludo: ৬ পেলে ঘুঁটি বের হবে; নিরাপদ ঘর ছাড়া গুটি কাটতে পারবে।';reset();
+ a.setCleanup(()=>clearTimeout(aiTimer));
+}
+function gameCarrom(a){
+ const {c,x,w,h}=canvas(a,800,600);
+ const board={l:65,r:735,t:65,b:535},pockets=[{x:76,y:76},{x:724,y:76},{x:76,y:524},{x:724,y:524}],pocketR=25;
+ let mode='local',turn=0,score=[0,0],balls=[],aim=null,drag=false,settled=true,raf=0,shotPocketed=false,queenBonus=[0,0],cpuTimer=null;
+ const colors={white:'#f4ead5',black:'#262a35',queen:'#df334c',striker:'#f6a623'};
+ function makeBall(id,color,bx,by,r=10){return {id,color,x:bx,y:by,vx:0,vy:0,r,alive:true}}
+ function reset(){
+  cancelAnimationFrame(raf);clearTimeout(cpuTimer);turn=0;score=[0,0];queenBonus=[0,0];aim=null;drag=false;settled=true;shotPocketed=false;balls=[];
+  const cx=400,cy=300;balls.push(makeBall('queen','queen',cx,cy,10));
+  for(let i=0;i<8;i++){const ang=i*Math.PI/4;balls.push(makeBall('b'+i,'black',cx+Math.cos(ang)*24,cy+Math.sin(ang)*24,10));}
+  for(let i=0;i<8;i++){const ang=i*Math.PI/4+Math.PI/8;balls.push(makeBall('w'+i,'white',cx+Math.cos(ang)*47,cy+Math.sin(ang)*47,10));}
+  balls.push(makeBall('striker','striker',400,470,13));a.message.textContent='স্ট্রাইকারে টাচ/ক্লিক করে পিছনে টেনে ছেড়ে শট নাও।';draw();
+ }
+ function striker(){return balls.find(b=>b.id==='striker'&&b.alive)}
+ function allStopped(){return balls.every(b=>!b.alive||Math.hypot(b.vx,b.vy)<0.12)}
+ function placeStriker(){const s=striker();if(s){s.x=400;s.y=470;s.vx=s.vy=0}}
+ function point(e){const r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*w/r.width,y:(e.clientY-r.top)*h/r.height}}
+ function down(e){if(mode==='cpu'&&turn===1||!settled)return;const p=point(e),s=striker();if(!s)return;if(Math.hypot(p.x-s.x,p.y-s.y)<34){drag=true;aim=p;c.setPointerCapture(e.pointerId);draw()}}
+ function move(e){if(drag){aim=point(e);draw()}}
+ function up(e){if(!drag)return;const p=point(e),s=striker();drag=false;aim=null;if(s){let dx=s.x-p.x,dy=s.y-p.y,len=Math.hypot(dx,dy);if(len>4){const scale=Math.min(18,len*.16);s.vx=dx/len*scale;s.vy=dy/len*scale;settled=false;shotPocketed=false;a.message.textContent=turn===0?'তোমার শট চলছে…':'দ্বিতীয় খেলোয়াড়ের শট চলছে…';}}draw()}
+ c.addEventListener('pointerdown',down);c.addEventListener('pointermove',move);c.addEventListener('pointerup',up);c.addEventListener('pointercancel',up);
+ function collide(b1,b2){
+  const dx=b2.x-b1.x,dy=b2.y-b1.y,dist=Math.hypot(dx,dy),min=b1.r+b2.r;if(!dist||dist>=min)return;
+  const nx=dx/dist,ny=dy/dist,overlap=min-dist;b1.x-=nx*overlap/2;b1.y-=ny*overlap/2;b2.x+=nx*overlap/2;b2.y+=ny*overlap/2;
+  const rel=(b1.vx-b2.vx)*nx+(b1.vy-b2.vy)*ny;if(rel>0){b1.vx-=rel*nx;b1.vy-=rel*ny;b2.vx+=rel*nx;b2.vy+=rel*ny}
+ }
+ function physics(){
+  let pocketedThisShot=0;
+  balls.forEach(b=>{if(!b.alive)return;b.x+=b.vx;b.y+=b.vy;b.vx*=0.992;b.vy*=0.992;if(Math.abs(b.vx)<0.035)b.vx=0;if(Math.abs(b.vy)<0.035)b.vy=0;
+   const inPocket=pockets.some(p=>Math.hypot(b.x-p.x,b.y-p.y)<pocketR);
+   if(inPocket){b.alive=false;if(b.id==='striker'){score[turn]=Math.max(0,score[turn]-1);a.message.textContent='ফাউল: স্ট্রাইকার পকেটে গেছে (-1)।'}else{pocketedThisShot++;shotPocketed=true;if(b.color==='queen'){score[turn]+=3;queenBonus[turn]+=3}else score[turn]++;a.best(score[turn])}return}
+   if(b.x-b.r<board.l){b.x=board.l+b.r;b.vx=Math.abs(b.vx)*.88}if(b.x+b.r>board.r){b.x=board.r-b.r;b.vx=-Math.abs(b.vx)*.88}
+   if(b.y-b.r<board.t){b.y=board.t+b.r;b.vy=Math.abs(b.vy)*.88}if(b.y+b.r>board.b){b.y=board.b-b.r;b.vy=-Math.abs(b.vy)*.88}
+  });
+  const live=balls.filter(b=>b.alive);for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++)collide(live[i],live[j]);
+  if(!allStopped()){settled=false;return}
+  settled=true;
+  if(!striker()) {balls.push(makeBall('striker','striker',400,470,13))}
+  if(!shotPocketed){turn=mode==='cpu'?0:1-turn}
+  shotPocketed=false;
+  if(mode==='cpu'&&turn===1){a.message.textContent='কম্পিউটার শট নিচ্ছে…';cpuTimer=setTimeout(cpuShot,700)}else a.message.textContent='পালা: '+(turn===0?'Player 1':'Player 2')+'। স্ট্রাইকার টেনে শট নাও।';
+ }
+ function cpuShot(){
+  if(mode!=='cpu'||turn!==1||!settled)return;
+  const s=striker();if(!s)return;
+  const targets=balls.filter(b=>b.alive&&b.id!=='striker'&&b.color!=='queen');const target=targets.sort((a,b)=>Math.hypot(a.x-s.x,a.y-s.y)-Math.hypot(b.x-s.x,b.y-s.y))[0]||balls.find(b=>b.alive&&b.color==='queen');
+  if(!target){turn=0;draw();return}
+  const dx=target.x-s.x,dy=target.y-s.y,len=Math.hypot(dx,dy)||1;s.vx=dx/len*10;s.vy=dy/len*10;settled=false;shotPocketed=false;a.message.textContent='কম্পিউটার শট নিচ্ছে…';
+ }
+ function draw(){
+  x.clearRect(0,0,w,h);x.fillStyle='#7c482b';x.fillRect(0,0,w,h);x.fillStyle='#bd8750';x.fillRect(35,35,730,530);x.fillStyle='#f2d7a5';x.fillRect(55,55,690,490);x.fillStyle='#e7c88e';x.fillRect(board.l,board.t,board.r-board.l,board.b-board.t);
+  x.strokeStyle='#865a32';x.lineWidth=5;x.strokeRect(82,82,636,436);x.strokeStyle='#b57a43';x.lineWidth=2;x.strokeRect(105,105,590,390);
+  pockets.forEach(p=>{x.fillStyle='#211713';x.beginPath();x.arc(p.x,p.y,pocketR,0,Math.PI*2);x.fill();x.strokeStyle='#f0c17b';x.lineWidth=4;x.stroke()});
+  x.strokeStyle='#cc8c5b';x.lineWidth=2;x.beginPath();x.arc(400,300,70,0,Math.PI*2);x.stroke();x.beginPath();x.arc(400,300,28,0,Math.PI*2);x.stroke();
+  x.strokeStyle='#cc8c5b';x.beginPath();x.moveTo(125,150);x.lineTo(675,150);x.moveTo(125,450);x.lineTo(675,450);x.stroke();
+  balls.forEach(b=>{if(!b.alive)return;x.save();x.shadowColor='#0007';x.shadowBlur=5;x.shadowOffsetY=2;x.fillStyle=b.color==='white'?'#f4ead5':b.color==='black'?'#252a34':b.color==='queen'?'#d92f4b':'#f6a623';x.beginPath();x.arc(b.x,b.y,b.r,0,Math.PI*2);x.fill();x.shadowBlur=0;x.strokeStyle=b.color==='black'?'#777':'#fff9';x.lineWidth=1.5;x.stroke();if(b.color==='queen'){x.fillStyle='#fff';x.font='bold 10px system-ui';x.textAlign='center';x.fillText('Q',b.x,b.y+3)}x.restore()});
+  if(drag&&aim){const s=striker();if(s){x.strokeStyle='#ffffffdd';x.lineWidth=3;x.setLineDash([7,5]);x.beginPath();x.moveTo(s.x,s.y);x.lineTo(s.x+(s.x-aim.x),s.y+(s.y-aim.y));x.stroke();x.setLineDash([])}}
+  x.fillStyle='#fff';x.font='bold 19px system-ui';x.fillText('P1: '+score[0],100,28);x.fillText((mode==='cpu'?'CPU':'P2')+': '+score[1],570,28);
+  if(!settled)physics();raf=requestAnimationFrame(draw);
+ }
+ button('Mode: 2 Players',()=>{mode=mode==='local'?'cpu':'local';reset();a.message.textContent=mode==='cpu'?'তুমি বনাম কম্পিউটার। স্ট্রাইকার টেনে শট নাও।':'একই ডিভাইসে ২ জন। স্ট্রাইকার টেনে শট নাও।'});
+ button('New Game',reset);
+ reset();a.setCleanup(()=>{cancelAnimationFrame(raf);clearTimeout(cpuTimer);c.removeEventListener('pointerdown',down);c.removeEventListener('pointermove',move);c.removeEventListener('pointerup',up);c.removeEventListener('pointercancel',up)});
 }
 function gameLights(a){
  const {c,x,w,h}=canvas(a,600,500);let board=[];function newBoard(){board=Array(25).fill(false);for(let k=0;k<18;k++){const i=Math.floor(Math.random()*25);[i,i-5,i+5,i%5?i-1:-1,i%5<4?i+1:-1].forEach(j=>{if(j>=0&&j<25)board[j]=!board[j]})}draw();a.message.textContent='সব আলো বন্ধ করো।'}function draw(){x.fillStyle='#111a31';x.fillRect(0,0,w,h);board.forEach((on,i)=>{let col=i%5,row=Math.floor(i/5),xx=58+col*98,yy=24+row*91;x.fillStyle=on?'#ffe66d':'#26324d';x.shadowColor=on?'#ffd166':'transparent';x.shadowBlur=on?18:0;x.beginPath();x.roundRect(xx,yy,78,70,12);x.fill();x.shadowBlur=0;x.strokeStyle='#ffffff25';x.stroke()})}
