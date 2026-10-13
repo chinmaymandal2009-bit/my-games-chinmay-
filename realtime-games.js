@@ -68,9 +68,9 @@ function gameZombieSurvival(a){
 }
 
 
-async function gameBattleRoyale(a){
+async async function gameBattleRoyale(a){
  a.message.textContent='3D Battle Royale loading…';
- let renderer,raf,disposed=false,scene,camera,player,zone,health=100,score=0,frame=0,move={x:0,z:0},enemies=[],radius=42;
+ let renderer,raf,disposed=false,scene,camera,player,zone,health=100,score=0,frame=0,move={x:0,z:0},enemies=[],radius=42,shoot=()=>{};
  const addBtn=(label,fn)=>button(label,fn,a.controls);
  addBtn('◀',()=>{move.x=-1;move.z=0});addBtn('▲',()=>{move.x=0;move.z=-1});addBtn('▼',()=>{move.x=0;move.z=1});addBtn('▶',()=>{move.x=1;move.z=0});addBtn('STOP',()=>{move={x:0,z:0}});
  addBtn('FIRE 🎯',()=>shoot());addBtn('ONLINE',()=>{a.message.textContent='Online Battle Royale-এর জন্য multiplayer server deploy ও connect করতে হবে। এখন AI prototype চলছে।'});
@@ -87,7 +87,7 @@ async function gameBattleRoyale(a){
   player=makeCharacter(0x2498ff);scene.add(player);
   for(let i=0;i<7;i++){const e=makeCharacter([0xef476f,0xf97316,0xa855f7][i%3]);e.position.set((i%2?1:-1)*(8+i*2),0,12+i*5);e.userData.hp=2;scene.add(e);enemies.push(e)}
   zone=new THREE.Mesh(new THREE.RingGeometry(radius-.35,radius,96),new THREE.MeshBasicMaterial({color:0x38bdf8,side:THREE.DoubleSide,transparent:true,opacity:.9}));zone.rotation.x=-Math.PI/2;zone.position.y=.08;scene.add(zone);
-  function shoot(){if(disposed||!player)return;let target=null,best=22;for(const e of enemies){if(e.userData.hp<=0)continue;const d=player.position.distanceTo(e.position);if(d<best){best=d;target=e}}if(target){target.userData.hp--;if(target.userData.hp<=0){target.position.y=-8;score++;a.best(score);a.message.textContent='Opponent tag হয়েছে! Score: '+score}}else a.message.textContent='কাছাকাছি AI opponent নেই—আরও কাছে যাও।'}
+  shoot=function(){if(disposed||!player||health<=0)return;let target=null,best=24;for(const e of enemies){if(e.userData.hp<=0)continue;const d=player.position.distanceTo(e.position);if(d<best){best=d;target=e}}if(target){target.userData.hp--;if(target.userData.hp<=0){target.position.y=-8;score++;a.best(score);a.message.textContent='Opponent tag হয়েছে! Score: '+score;if(enemies.every(q=>q.userData.hp<=0))a.message.textContent='🏆 VICTORY! সব AI opponent-কে হারিয়েছ! RESTART চাপো.'}}else a.message.textContent='কাছাকাছি AI opponent নেই—আরও কাছে যাও।'}
   const keydown=e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k==='w'||k==='arrowup')move.z=-1;if(k==='s'||k==='arrowdown')move.z=1;if(k==='a'||k==='arrowleft')move.x=-1;if(k==='d'||k==='arrowright')move.x=1;if(k===' ')shoot()};
   const keyup=e=>{if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase()))move={x:0,z:0}};
   window.addEventListener('keydown',keydown);window.addEventListener('keyup',keyup);
