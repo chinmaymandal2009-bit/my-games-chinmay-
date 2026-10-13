@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>My Game | 14 Games</title>
+<title>My Game | 5 Games</title>
 <style>
 :root{--bg:#0b1020;--panel:#151d33;--panel2:#1c2945;--text:#f5f7ff;--muted:#aab6d3;--accent:#7c5cff;--accent2:#27d7a1;--gold:#ffd166;--glow:#7c5cff66}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c2a50 0,#0b1020 60%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer;border:0}.game-controls button{touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;min-height:44px;padding:10px 16px;margin:4px;border-radius:12px;background:linear-gradient(135deg,#394a78,#252f50);color:#fff;font-weight:750;border:1px solid #ffffff25}.game-controls button:active{transform:scale(.97);background:#6556c8}@media(max-width:700px){.game-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.game-controls button{flex:1 1 auto;min-width:76px;font-size:15px;min-height:48px}canvas{touch-action:pan-y;max-width:100%;height:auto}}
@@ -62,7 +62,7 @@ footer{color:#718096;border-color:#ffffff10}
 <body>
 <header>
  <div class="brand"><span class="logo">🎮</span><span>MY GAME</span></div>
- <div class="header-right">14 GAMES · MOBILE READY</div>
+ <div class="header-right">5 GAMES · MOBILE READY</div>
  <button class="secondary" id="homeBtn" style="display:none">⌂ Home</button>
 </header>
 <main id="home">
@@ -83,23 +83,14 @@ footer{color:#718096;border-color:#ffffff10}
  <div class="game-top"><div><div class="game-title" id="gameTitle">Game</div><div class="game-info" id="gameInfo">নির্দেশনা</div></div><button class="secondary" id="backBtn">← সব গেম</button></div>
  <div class="game-shell"><div class="game-canvas-wrap" id="canvasWrap"></div><div class="message" id="message" aria-live="polite">খেলা শুরু করো!</div><div class="game-controls" id="gameControls"></div></div>
 </section>
-<footer>MY GAME · 14 mini games in one web app · Progress scores are saved on this device.</footer>
+<footer>MY GAME · 5 mini games in one web app · Progress scores are saved on this device.</footer>
 <script>
 const games=[
-{id:'runner',name:'Coin Runner',icon:'🏃',tag:'2D RUNNER',desc:'চরিত্র চালাও, কয়েন নাও, বাধা এড়িয়ে চলো।',colors:['#3c9b9c','#17264a'],how:'স্ক্রিনের ◀ ▶ ও Jump বাটনে টাচ করো।',best:'runner'},
-{id:'racer',name:'Road Racer',icon:'🏎️',tag:'RACING',desc:'গাড়ি চালিয়ে রাস্তার অন্য গাড়ি এড়িয়ে চলো।',colors:['#fb923c','#6b235b'],how:'স্ক্রিনের Left ও Right বাটনে টাচ করে গাড়ি চালাও।',best:'racer'},
-{id:'snake',name:'Snake',icon:'🐍',tag:'CLASSIC',desc:'খাবার খাও, বড় হও, দেয়ালে ধাক্কা দিও না।',colors:['#3ba76c','#164e63'],how:'স্ক্রিনের ▲ ▼ ◀ ▶ বাটনে টাচ করে সাপ চালাও।',best:'snake'},
 {id:'breakout',name:'Brick Breaker',icon:'🧱',tag:'ARCADE',desc:'প্যাডেল চালিয়ে বল দিয়ে সব ইট ভাঙো।',colors:['#9b5de5','#30205b'],how:'স্ক্রিনে টাচ/ড্র্যাগ করো অথবা ◀ ▶ বাটনে টাচ করে প্যাডেল চালাও।',best:'breakout'},
 {id:'memory',name:'Memory Match',icon:'🧠',tag:'PUZZLE',desc:'কার্ড উল্টে একই রকম জোড়া খুঁজে বের করো।',colors:['#f15bb5','#662d70'],how:'দুটি কার্ডে ট্যাপ করে মিল খুঁজে বের করো।',best:'memory'},
 {id:'tictactoe',name:'Tic-Tac-Toe',icon:'⭕',tag:'2 PLAYERS',desc:'একই লাইনে তিনটি X অথবা O সাজাও।',colors:['#00bbf9','#124a78'],how:'একটি ঘরে চাপো। একই ডিভাইসে দুইজন খেলতে পারো।',best:'tictactoe'},
-{id:'clicker',name:'Star Clicker',icon:'⭐',tag:'SCORE',desc:'সময় শেষ হওয়ার আগে যত পারো তারা ট্যাপ করো।',colors:['#fee440','#975a16'],how:'Start চাপো, তারপর বড় তারাটিতে দ্রুত ট্যাপ করো।',best:'clicker'},
-{id:'whack',name:'Whack-a-Mole',icon:'🐹',tag:'REACTION',desc:'যে গর্তে মোল দেখা যায়, তাতে দ্রুত চাপো।',colors:['#80b918','#31572c'],how:'Start চাপো এবং মোল দেখা দিলে ট্যাপ করো।',best:'whack'},
 {id:'guess',name:'Number Guess',icon:'🔢',tag:'BRAIN',desc:'১ থেকে ১০০-এর মধ্যে গোপন সংখ্যা অনুমান করো।',colors:['#00f5d4','#145c68'],how:'সংখ্যা লিখে Guess চাপো; বেশি না কম জানানো হবে।',best:'guess'},
-{id:'ludo',name:'Ludo',icon:'🎲',tag:'BOARD GAME',desc:'পাশা রোল করো, ঘুঁটি চালাও এবং আগে সব ঘুঁটি ঘরে পৌঁছাও।',colors:['#ef476f','#284b9b'],how:'Roll Dice চাপো; ৬ পেলে ঘুঁটি বের হবে। ঘুঁটি বেছে Move চাপো।',best:'ludo'},
-{id:'carrom',name:'Carrom',icon:'🔴',tag:'PHYSICS GAME',desc:'স্ট্রাইকার টেনে শট নাও, গুটি পকেটে ফেলো এবং পয়েন্ট জিতো।',colors:['#c18a52','#4a2e23'],how:'স্ট্রাইকারে টাচ করে পিছনে টেনে ছেড়ে দাও—এটাই শট।',best:'carrom'},
 {id:'chess',name:'Chess',icon:'♟️',tag:'STRATEGY',desc:'দাবা খেলো—বৈধ চাল, Check এবং Checkmate সহ।',colors:['#e0b16a','#365f52'],how:'ঘুঁটিতে ট্যাপ করো, তারপর গন্তব্য ঘরে ট্যাপ করো। মোড বেছে নাও: ২ জন বা কম্পিউটার।',best:'chess'},
-{id:'pool',name:'8 Ball Pool',icon:'🎱',tag:'BILLIARDS',desc:'কিউ দিয়ে বল পকেটে ফেলো; ৮ নম্বর বল শেষে ফেলতে হবে।',colors:['#15966b','#103e42'],how:'সাদা বলের কাছে টাচ/ক্লিক করে বিপরীত দিকে টেনে শট নাও। মোড বেছে নাও: ২ জন বা কম্পিউটার।',best:'pool'},
-{id:'lights',name:'Lights Out',icon:'💡',tag:'LOGIC',desc:'লাইট বন্ধ করো—একটি টাইল চাপলে পাশেরগুলিও বদলাবে।',colors:['#f8961e','#8a3d28'],how:'সব আলো বন্ধ করাই লক্ষ্য। টাইল চাপলে তার চারপাশ বদলায়।',best:'lights'}
 ];
 const $=s=>document.querySelector(s); const grid=$('#grid'); let current=null, cleanup=()=>{}, high={}; try { high=JSON.parse(localStorage.getItem('myGameHigh')||'{}')||{}; } catch(e) { high={}; try { localStorage.removeItem('myGameHigh'); } catch(_) {} }
 function saveBest(id,score){if(score>(high[id]||0)){high[id]=score;localStorage.setItem('myGameHigh',JSON.stringify(high))}}
