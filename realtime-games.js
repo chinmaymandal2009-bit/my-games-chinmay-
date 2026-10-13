@@ -66,3 +66,38 @@ function gameZombieSurvival(a){
  }else{x.fillStyle='#fff';x.font='bold 28px system-ui';x.fillText('SURVIVAL OVER',w/2-105,h/2)}}
  reset();draw();a.setCleanup(()=>{cancelAnimationFrame(raf);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)});
 }
+
+
+async function gameBattleRoyale(a){
+ a.message.textContent='3D Battle Royale loading…';
+ let renderer,raf,disposed=false,scene,camera,player,zone,health=100,score=0,frame=0,move={x:0,z:0},enemies=[],radius=42;
+ const addBtn=(label,fn)=>button(label,fn,a.controls);
+ addBtn('◀',()=>{move.x=-1;move.z=0});addBtn('▲',()=>{move.x=0;move.z=-1});addBtn('▼',()=>{move.x=0;move.z=1});addBtn('▶',()=>{move.x=1;move.z=0});addBtn('STOP',()=>{move={x:0,z:0}});
+ addBtn('FIRE 🎯',()=>shoot());addBtn('ONLINE',()=>{a.message.textContent='Online Battle Royale-এর জন্য multiplayer server deploy ও connect করতে হবে। এখন AI prototype চলছে।'});
+ addBtn('RESTART',()=>{if(player){health=100;score=0;radius=42;player.position.set(0,0,0);enemies.forEach((e,i)=>{e.position.set((i%2?1:-1)*(8+i*2),0,12+i*5);e.userData.hp=2});a.message.textContent='নতুন ম্যাচ শুরু! AI opponents-কে ট্যাগ করো।'}});
+ try{
+  const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');if(disposed)return;
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x9dd9ff);scene.fog=new THREE.Fog(0x9dd9ff,45,110);
+  camera=new THREE.PerspectiveCamera(65,800/520,.1,300);
+  renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(800,520);renderer.domElement.style.width='100%';renderer.domElement.style.maxHeight='68vh';renderer.domElement.style.display='block';renderer.domElement.style.borderRadius='14px';a.wrap.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x41633b,2));const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(20,35,10);scene.add(sun);
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(140,140),new THREE.MeshStandardMaterial({color:0x5a9b58,roughness:1}));ground.rotation.x=-Math.PI/2;scene.add(ground);
+  for(let i=0;i<38;i++){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.28,1.5,6),new THREE.MeshStandardMaterial({color:0x795235}));const crown=new THREE.Mesh(new THREE.ConeGeometry(1.2,3,7),new THREE.MeshStandardMaterial({color:0x236b46}));let tx=(Math.random()-.5)*100,tz=(Math.random()-.5)*100;if(Math.hypot(tx,tz)<10){tx+=20;tz+=20}trunk.position.set(tx,.75,tz);crown.position.set(tx,2.6,tz);scene.add(trunk,crown)}
+  function makeCharacter(color){const g=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.8,4,8),new THREE.MeshStandardMaterial({color}));body.position.y=.85;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),new THREE.MeshStandardMaterial({color:0xffd4aa}));head.position.y=1.65;g.add(head);const pack=new THREE.Mesh(new THREE.BoxGeometry(.48,.52,.22),new THREE.MeshStandardMaterial({color:0x334155}));pack.position.set(0,1,.38);g.add(pack);return g}
+  player=makeCharacter(0x2498ff);scene.add(player);
+  for(let i=0;i<7;i++){const e=makeCharacter([0xef476f,0xf97316,0xa855f7][i%3]);e.position.set((i%2?1:-1)*(8+i*2),0,12+i*5);e.userData.hp=2;scene.add(e);enemies.push(e)}
+  zone=new THREE.Mesh(new THREE.RingGeometry(radius-.35,radius,96),new THREE.MeshBasicMaterial({color:0x38bdf8,side:THREE.DoubleSide,transparent:true,opacity:.9}));zone.rotation.x=-Math.PI/2;zone.position.y=.08;scene.add(zone);
+  function shoot(){if(disposed||!player)return;let target=null,best=22;for(const e of enemies){if(e.userData.hp<=0)continue;const d=player.position.distanceTo(e.position);if(d<best){best=d;target=e}}if(target){target.userData.hp--;if(target.userData.hp<=0){target.position.y=-8;score++;a.best(score);a.message.textContent='Opponent tag হয়েছে! Score: '+score}}else a.message.textContent='কাছাকাছি AI opponent নেই—আরও কাছে যাও।'}
+  const keydown=e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k==='w'||k==='arrowup')move.z=-1;if(k==='s'||k==='arrowdown')move.z=1;if(k==='a'||k==='arrowleft')move.x=-1;if(k==='d'||k==='arrowright')move.x=1;if(k===' ')shoot()};
+  const keyup=e=>{if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase()))move={x:0,z:0}};
+  window.addEventListener('keydown',keydown);window.addEventListener('keyup',keyup);
+  let last=0;function animate(t){if(disposed)return;raf=requestAnimationFrame(animate);frame++;const dt=Math.min((t-last)/16.67||1,2);last=t;
+   const dx=move.x,dz=move.z,len=Math.hypot(dx,dz)||1;player.position.x+=dx/len*.16*dt;player.position.z+=dz/len*.16*dt;player.position.x=Math.max(-radius,Math.min(radius,player.position.x));player.position.z=Math.max(-radius,Math.min(radius,player.position.z));if(Math.abs(dx)+Math.abs(dz)>0)player.rotation.y=Math.atan2(dx,dz);
+   enemies.forEach(e=>{if(e.userData.hp<=0)return;const vx=player.position.x-e.position.x,vz=player.position.z-e.position.z,d=Math.hypot(vx,vz)||1;if(d>1.7){e.position.x+=vx/d*.025*dt;e.position.z+=vz/d*.025*dt}if(d<1.7&&frame%45===0){health=Math.max(0,health-10);a.message.textContent='AI opponent কাছে এসেছে! Health: '+health;if(health<=0)a.message.textContent='MATCH OVER — Score: '+score+'. RESTART চাপো.'}});
+   if(frame%360===0&&radius>12){radius-=2;zone.geometry.dispose();zone.geometry=new THREE.RingGeometry(radius-.35,radius,96);a.message.textContent='Safe zone ছোট হচ্ছে! Score: '+score+' · Health: '+health}
+   camera.position.set(player.position.x,player.position.y+7,player.position.z+10);camera.lookAt(player.position.x,player.position.y+1,player.position.z);renderer.render(scene,camera);
+  }
+  a.message.textContent='3D Battle Royale শুরু! টাচ বাটন বা WASD ব্যবহার করো। FIRE চাপলে কাছের AI opponent-কে ট্যাগ করবে।';animate(0);
+  a.setCleanup(()=>{disposed=true;cancelAnimationFrame(raf);window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);if(renderer){renderer.dispose();renderer.domElement.remove()}});
+ }catch(e){console.error(e);a.message.textContent='3D গেম লোড হয়নি। Internet connection পরীক্ষা করে পেজ refresh করো।'}
+}
