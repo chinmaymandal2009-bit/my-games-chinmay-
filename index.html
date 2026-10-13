@@ -51,6 +51,12 @@ footer{color:#718096;border-color:#ffffff10}
  #gameView{margin:13px auto 20px;padding:0 10px 20px}.game-title{font-size:20px}.game-top{align-items:flex-start}.game-shell{padding:7px;border-radius:16px}.game-canvas-wrap{min-height:200px}.game-controls{gap:5px;padding-top:10px}.game-controls button{flex:1 1 28%;min-width:75px;min-height:48px;padding:11px 9px;font-size:13px}footer{padding:18px 14px;font-size:11px}
 }
 @media(max-width:360px){.hero h1{font-size:35px}.grid{gap:8px}.cover{height:92px}.card-body{padding:9px}.play{padding:7px}.best{font-size:9px}}
+
+/* Mobile touch mode: keep gestures inside the active game and make controls easier to tap */
+.game-canvas-wrap,.game-canvas-wrap canvas{touch-action:none!important;overscroll-behavior:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.game-controls{touch-action:manipulation;overscroll-behavior:contain}
+.game-controls button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;min-height:50px}
+@media(max-width:650px){.game-canvas-wrap{overscroll-behavior:none}.game-controls button{min-height:52px;font-size:14px;padding:12px 10px}.game-shell{touch-action:pan-y}}
 </style>
 </head>
 <body>
