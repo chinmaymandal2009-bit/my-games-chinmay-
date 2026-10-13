@@ -82,7 +82,7 @@ function gameRunner(a){
  for(let i=0;i<10;i++)items.push({x:150+Math.random()*500,y:-i*160-100,got:false});for(let i=0;i<9;i++)obs.push({x:120+Math.random()*560,y:-i*190-250});
  function key(e,v){keys[e.key.toLowerCase()]=v;if([' ','ArrowLeft','ArrowRight','ArrowUp'].includes(e.key))e.preventDefault();if(v&&e.key===' '&&ground){vy=-12;ground=false}}
  const kd=e=>key(e,true),ku=e=>key(e,false);window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);
- const btns={};[['◀','left'],['▲ Jump','jump'],['▶','right'],['Restart','restart']].forEach(([t,k])=>{btns[k]=button(t,()=>{if(k==='restart'){px=400;score=0;alive=true;items.forEach((it,i)=>{it.got=false;it.y=-i*160-100});obs.forEach((o,i)=>o.y=-i*190-250)}else if(k==='jump'&&ground){vy=-12;ground=false}else keys[k]=true});if(['left','right'].includes(k)){btns[k].onpointerdown=()=>keys[k]=true;btns[k].onpointerup=btns[k].onpointerleave=()=>keys[k]=false}});
+ const btns={};[['◀','left'],['▲ Jump','jump'],['▶','right'],['Restart','restart']].forEach(([t,k])=>{const b=btns[k]=button(t,()=>{if(k==='restart'){px=400;py=365;vy=0;ground=true;score=0;alive=true;items.forEach((it,i)=>{it.got=false;it.y=-i*160-100});obs.forEach((o,i)=>o.y=-i*190-250);a.message.textContent='আবার শুরু হয়েছে!'}else if(k==='jump'&&ground){vy=-12;ground=false}});if(k==='left'||k==='right'){b.onclick=e=>e.preventDefault();const down=e=>{e.preventDefault();if(k==='left')keys.left=true;else keys.right=true};const up=e=>{e.preventDefault();keys.left=false;keys.right=false};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('lostpointercapture',up);b.addEventListener('contextmenu',e=>e.preventDefault())}else if(k==='jump'){b.addEventListener('pointerdown',e=>{e.preventDefault();if(ground){vy=-12;ground=false}});b.onclick=e=>e.preventDefault()}});
  function draw(){raf=requestAnimationFrame(draw);frame++;x.fillStyle='#8bd8ff';x.fillRect(0,0,w,h);x.fillStyle='#b6ecff';for(let i=0;i<8;i++){x.beginPath();x.arc((i*127+frame*.3)%w,55+(i%3)*22,20,0,7);x.fill()}
  x.fillStyle='#398b58';x.beginPath();x.moveTo(210,0);x.lineTo(590,0);x.lineTo(740,h);x.lineTo(60,h);x.fill();x.fillStyle='#6d777d';x.beginPath();x.moveTo(280,0);x.lineTo(520,0);x.lineTo(690,h);x.lineTo(110,h);x.fill();x.strokeStyle='#fff4a3';x.setLineDash([28,25]);x.lineWidth=5;x.beginPath();x.moveTo(400,0);x.lineTo(400,h);x.stroke();x.setLineDash([]);
  if(alive){if(keys.left||keys.a||keys.arrowleft||keys['◀'])px-=5;if(keys.right||keys.d||keys.arrowright||keys['▶'])px+=5;if((keys.up||keys.w||keys.arrowup)&&ground){vy=-12;ground=false}px=Math.max(90,Math.min(710,px));py+=vy;vy+=.55;if(py>=365){py=365;vy=0;ground=true}
@@ -99,7 +99,9 @@ function gameRacer(a){
  for(let i=0;i<4;i++)traffic.push(spawn(-i*155-80));
  const kd=e=>{const k=e.key.toLowerCase();if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[k]=true;if(alive&&(k==='arrowleft'||k==='a'))lane=Math.max(0,lane-1);if(alive&&(k==='arrowright'||k==='d'))lane=Math.min(2,lane+1)};
  const ku=e=>keys[e.key.toLowerCase()]=false;window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);
- const left=button('◀ Left',()=>{if(alive)lane=Math.max(0,lane-1)}),right=button('Right ▶',()=>{if(alive)lane=Math.min(2,lane+1)});
+ const left=button('◀ Left',()=>{}),right=button('Right ▶',()=>{});
+ function bindLaneTouch(b,delta){const act=e=>{e.preventDefault();if(alive)lane=Math.max(0,Math.min(2,lane+delta))};b.onclick=e=>{e.preventDefault();act(e)};b.addEventListener('pointerdown',e=>{e.preventDefault();act(e)});b.addEventListener('contextmenu',e=>e.preventDefault())}
+ bindLaneTouch(left,-1);bindLaneTouch(right,1);
  button('Restart',reset);
  function reset(){lane=1;px=lanes[lane];score=0;speed=4;alive=true;traffic=[];for(let i=0;i<4;i++)traffic.push(spawn(-i*155-80));a.message.textContent='গাড়ি চালাও—গতি ধীরে ধীরে বাড়বে!'}
  function car(cx,cy,color,player=false){
