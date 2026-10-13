@@ -6,7 +6,7 @@
 <title>My Game | 14 Games</title>
 <style>
 :root{--bg:#0b1020;--panel:#151d33;--panel2:#1c2945;--text:#f5f7ff;--muted:#aab6d3;--accent:#7c5cff;--accent2:#27d7a1;--gold:#ffd166;--glow:#7c5cff66}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c2a50 0,#0b1020 60%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer;border:0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c2a50 0,#0b1020 60%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer;border:0}.game-controls button{touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;min-height:44px;padding:10px 16px;margin:4px;border-radius:12px;background:linear-gradient(135deg,#394a78,#252f50);color:#fff;font-weight:750;border:1px solid #ffffff25}.game-controls button:active{transform:scale(.97);background:#6556c8}@media(max-width:700px){.game-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.game-controls button{flex:1 1 auto;min-width:76px;font-size:15px;min-height:48px}canvas{touch-action:pan-y;max-width:100%;height:auto}}
 header{position:sticky;top:0;z-index:5;background:#0b1020eF;border-bottom:1px solid #ffffff16;backdrop-filter:blur(12px);padding:14px clamp(14px,4vw,42px);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;letter-spacing:.3px}.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#20c7d9);box-shadow:0 8px 25px #7c5cff44}
 .header-right{color:var(--muted);font-size:13px}
@@ -52,10 +52,10 @@ footer{border-top:1px solid #ffffff14;text-align:center;padding:22px;color:var(-
 <footer>MY GAME · 14 mini games in one web app · Progress scores are saved on this device.</footer>
 <script>
 const games=[
-{id:'runner',name:'Coin Runner',icon:'🏃',tag:'2D RUNNER',desc:'চরিত্র চালাও, কয়েন নাও, বাধা এড়িয়ে চলো।',colors:['#3c9b9c','#17264a'],how:'← → বা A/D দিয়ে চলবে, Space দিয়ে লাফাবে।',best:'runner'},
-{id:'racer',name:'Road Racer',icon:'🏎️',tag:'RACING',desc:'গাড়ি চালিয়ে রাস্তার অন্য গাড়ি এড়িয়ে চলো।',colors:['#fb923c','#6b235b'],how:'← → বা A/D দিয়ে গাড়ি চালাও।',best:'racer'},
-{id:'snake',name:'Snake',icon:'🐍',tag:'CLASSIC',desc:'খাবার খাও, বড় হও, দেয়ালে ধাক্কা দিও না।',colors:['#3ba76c','#164e63'],how:'Arrow Keys বা WASD দিয়ে সাপ চালাও।',best:'snake'},
-{id:'breakout',name:'Brick Breaker',icon:'🧱',tag:'ARCADE',desc:'প্যাডেল চালিয়ে বল দিয়ে সব ইট ভাঙো।',colors:['#9b5de5','#30205b'],how:'Mouse/Touch বা ← → দিয়ে প্যাডেল চালাও।',best:'breakout'},
+{id:'runner',name:'Coin Runner',icon:'🏃',tag:'2D RUNNER',desc:'চরিত্র চালাও, কয়েন নাও, বাধা এড়িয়ে চলো।',colors:['#3c9b9c','#17264a'],how:'স্ক্রিনের ◀ ▶ ও Jump বাটনে টাচ করো।',best:'runner'},
+{id:'racer',name:'Road Racer',icon:'🏎️',tag:'RACING',desc:'গাড়ি চালিয়ে রাস্তার অন্য গাড়ি এড়িয়ে চলো।',colors:['#fb923c','#6b235b'],how:'স্ক্রিনের Left ও Right বাটনে টাচ করে গাড়ি চালাও।',best:'racer'},
+{id:'snake',name:'Snake',icon:'🐍',tag:'CLASSIC',desc:'খাবার খাও, বড় হও, দেয়ালে ধাক্কা দিও না।',colors:['#3ba76c','#164e63'],how:'স্ক্রিনের ▲ ▼ ◀ ▶ বাটনে টাচ করে সাপ চালাও।',best:'snake'},
+{id:'breakout',name:'Brick Breaker',icon:'🧱',tag:'ARCADE',desc:'প্যাডেল চালিয়ে বল দিয়ে সব ইট ভাঙো।',colors:['#9b5de5','#30205b'],how:'স্ক্রিনে টাচ/ড্র্যাগ করো অথবা ◀ ▶ বাটনে টাচ করে প্যাডেল চালাও।',best:'breakout'},
 {id:'memory',name:'Memory Match',icon:'🧠',tag:'PUZZLE',desc:'কার্ড উল্টে একই রকম জোড়া খুঁজে বের করো।',colors:['#f15bb5','#662d70'],how:'দুটি কার্ডে ট্যাপ করে মিল খুঁজে বের করো।',best:'memory'},
 {id:'tictactoe',name:'Tic-Tac-Toe',icon:'⭕',tag:'2 PLAYERS',desc:'একই লাইনে তিনটি X অথবা O সাজাও।',colors:['#00bbf9','#124a78'],how:'একটি ঘরে চাপো। একই ডিভাইসে দুইজন খেলতে পারো।',best:'tictactoe'},
 {id:'clicker',name:'Star Clicker',icon:'⭐',tag:'SCORE',desc:'সময় শেষ হওয়ার আগে যত পারো তারা ট্যাপ করো।',colors:['#fee440','#975a16'],how:'Start চাপো, তারপর বড় তারাটিতে দ্রুত ট্যাপ করো।',best:'clicker'},
@@ -117,7 +117,7 @@ function gameRacer(a){
   x.fillStyle='#07152a';x.fillRect(15,15,190,45);x.fillStyle='#fff';x.font='bold 20px system-ui';x.fillText('🏁 Score: '+score,28,44);x.fillStyle='#d5e3ff';x.font='13px system-ui';x.fillText('SPEED '+Math.round(speed*10),w-115,35);
   if(!alive){x.fillStyle='#061023bb';x.fillRect(0,0,w,h);x.fillStyle='#fff';x.textAlign='center';x.font='900 38px system-ui';x.fillText('CRASH!',w/2,h/2-8);x.font='18px system-ui';x.fillText('Score '+score,w/2,h/2+26);x.textAlign='left'}
  }
- draw();a.message.textContent='← → / A D অথবা নিচের Left/Right চাপো।';a.setCleanup(()=>{cancelAnimationFrame(raf);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)});
+ draw();a.message.textContent='টাচ কন্ট্রোল: নিচের ◀ Left / Right ▶ বাটনে টাচ করো।';a.setCleanup(()=>{cancelAnimationFrame(raf);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)});
 }
 function gameSnake(a){
  const {c,x,w,h}=canvas(a,600,600);let n=20,cell=30,snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}],dir={x:1,y:0},food={x:14,y:10},score=0,over=false,timer,raf;
@@ -131,7 +131,7 @@ function gameSnake(a){
 function gameBreakout(a){
  const {c,x,w,h}=canvas(a,800,460);let px=350,bx=400,by=330,vx=4,vy=-4,score=0,alive=true,bricks=[],keys={},raf;for(let r=0;r<5;r++)for(let col=0;col<10;col++)bricks.push({x:30+col*74,y:45+r*28,on:true,color:['#ff6b6b','#ffd166','#06d6a0','#4cc9f0','#a78bfa'][r]});
  const kd=e=>keys[e.key.toLowerCase()]=true,ku=e=>keys[e.key.toLowerCase()]=false;window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();px=(e.clientX-r.left)*w/r.width-60});
- button('◀ Left',()=>{px=Math.max(0,px-45)});button('Right ▶',()=>{px=Math.min(w-120,px+45)});button('Restart',()=>{px=350;bx=400;by=330;vx=4;vy=-4;score=0;alive=true;bricks.forEach(b=>b.on=true)});
+ button('◀ Left',()=>{px=Math.max(0,px-45)});button('Right ▶',()=>{px=Math.min(w-120,px+45)});button('◀ Left',()=>{px=Math.max(0,px-45)});button('Right ▶',()=>{px=Math.min(w-120,px+45)});button('Restart',()=>{px=350;bx=400;by=330;vx=4;vy=-4;score=0;alive=true;bricks.forEach(b=>b.on=true)});
  function draw(){raf=requestAnimationFrame(draw);x.fillStyle='#0d1830';x.fillRect(0,0,w,h);if(alive){if(keys.arrowleft||keys.a)px-=6;if(keys.arrowright||keys.d)px+=6;px=Math.max(0,Math.min(w-120,px));bx+=vx;by+=vy;if(bx<8||bx>w-8)vx*=-1;if(by<8)vy=Math.abs(vy);if(by>h-30&&by<h-12&&bx>px&&bx<px+120)vy=-Math.abs(vy);if(by>h+10){alive=false;a.message.textContent='বল পড়ে গেছে! Restart চাপো। Score: '+score}
  bricks.forEach(b=>{if(b.on&&bx>b.x&&bx<b.x+65&&by>b.y&&by<b.y+19){b.on=false;vy*=-1;score++;a.best(score)}});if(bricks.every(b=>!b.on)){a.message.textContent='You win! সব ইট ভেঙেছ।';alive=false}}
  bricks.forEach(b=>{if(b.on){x.fillStyle=b.color;x.beginPath();x.roundRect(b.x,b.y,65,18,4);x.fill()}});x.fillStyle='#e6efff';x.fillRect(px,h-25,120,12);x.fillStyle='#ffd166';x.beginPath();x.arc(bx,by,9,0,7);x.fill();x.fillStyle='white';x.font='bold 18px system-ui';x.fillText('Score: '+score,15,h-40)}
