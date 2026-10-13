@@ -63,7 +63,7 @@ const games=[
 {id:'guess',name:'Number Guess',icon:'🔢',tag:'BRAIN',desc:'১ থেকে ১০০-এর মধ্যে গোপন সংখ্যা অনুমান করো।',colors:['#00f5d4','#145c68'],how:'সংখ্যা লিখে Guess চাপো; বেশি না কম জানানো হবে।',best:'guess'},
 {id:'lights',name:'Lights Out',icon:'💡',tag:'LOGIC',desc:'লাইট বন্ধ করো—একটি টাইল চাপলে পাশেরগুলিও বদলাবে।',colors:['#f8961e','#8a3d28'],how:'সব আলো বন্ধ করাই লক্ষ্য। টাইল চাপলে তার চারপাশ বদলায়।',best:'lights'}
 ];
-const $=s=>document.querySelector(s); const grid=$('#grid'); let current=null, cleanup=()=>{}, high=JSON.parse(localStorage.getItem('myGameHigh')||'{}');
+const $=s=>document.querySelector(s); const grid=$('#grid'); let current=null, cleanup=()=>{}, high={}; try { high=JSON.parse(localStorage.getItem('myGameHigh')||'{}')||{}; } catch(e) { high={}; try { localStorage.removeItem('myGameHigh'); } catch(_) {} }
 function saveBest(id,score){if(score>(high[id]||0)){high[id]=score;localStorage.setItem('myGameHigh',JSON.stringify(high))}}
 function renderCards(filter=''){grid.innerHTML='';let list=games.filter(g=>(g.name+' '+g.tag+' '+g.desc).toLowerCase().includes(filter.toLowerCase()));$('#noResults').style.display=list.length?'none':'block';list.forEach(g=>{const el=document.createElement('article');el.className='card';el.innerHTML=`<div class="cover" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><span class="tag">${g.tag}</span>${g.icon}</div><div class="card-body"><h3>${g.name}</h3><p>${g.desc}</p><div class="card-foot"><span class="best">🏆 Best: ${high[g.id]||0}</span><button class="play">PLAY ▶</button></div></div>`;el.querySelector('button').onclick=()=>openGame(g.id);grid.appendChild(el)})}
 $('#search').addEventListener('input',e=>renderCards(e.target.value));$('#homeBtn').onclick=showHome;$('#backBtn').onclick=showHome;
